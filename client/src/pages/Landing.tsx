@@ -72,9 +72,7 @@ const LandingPage = () => {
               </Typography>
             </Box>
           ) : null}
-          {contract && (
-            <Mint contract={contract} afterMint={fetchNFTMetadata} />
-          )}
+          {contract && <Mint afterMint={fetchNFTMetadata} />}
         </Box>
       )}
     </Box>

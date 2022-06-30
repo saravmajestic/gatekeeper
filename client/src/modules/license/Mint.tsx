@@ -1,9 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
+import gateKeeperAbi from "../../abis/GateKeeper.json";
 
 type Props = {
-  contract: ethers.Contract;
   afterMint: () => void;
 };
 const ProductIds = [
@@ -12,8 +12,9 @@ const ProductIds = [
   "Adobe Photoshop",
   "Sketch",
 ];
-const Mint = ({ contract, afterMint }: Props) => {
+const Mint = ({ afterMint }: Props) => {
   const [isMinting, setIsMinting] = useState(false);
+  const [contract, setContract] = useState<ethers.Contract | null>(null);
 
   const onLicenseMint = async (
     sender: string,
@@ -36,7 +37,26 @@ const Mint = ({ contract, afterMint }: Props) => {
       }
     };
   }, [contract]);
+  useEffect(() => {
+    const { ethereum } = window;
 
+    if (ethereum) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const gameContract = new ethers.Contract(
+        `${process.env.REACT_APP_CONTRACT_ADDRESS}`,
+        gateKeeperAbi.abi,
+        signer
+      );
+
+      /*
+       * This is the big difference. Set our gameContract in state.
+       */
+      setContract(gameContract);
+    } else {
+      console.log("Ethereum object not found");
+    }
+  }, []);
   const mintLicense = async () => {
     try {
       if (contract) {
