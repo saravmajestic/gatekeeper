@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-
 contract GateKeeper is ERC721 {
     struct LicenseAttributes {
         string productID;
@@ -16,20 +15,20 @@ contract GateKeeper is ERC721 {
     }
     mapping(uint256 => LicenseAttributes) public nftHolderAttributes;
     mapping(address => uint256) public nftHolders;
-    
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    event CharacterNFTMinted(
-        address sender,
-        uint256 tokenId,
-        string productId
-    );
+    event LicenseMinted(address sender, uint256 tokenId, string productId);
+
     constructor() ERC721("GateKeeper", "License") {
         _tokenIds.increment();
     }
 
-    function mintLicenseNFT(string calldata _productId, string calldata _licenseKey) external {
+    function mintLicenseNFT(
+        string calldata _productId,
+        string calldata _licenseKey
+    ) external {
         uint256 newItemId = _tokenIds.current();
 
         _safeMint(msg.sender, newItemId);
@@ -49,14 +48,16 @@ contract GateKeeper is ERC721 {
 
         // Increment the tokenId for the next person that uses it.
         _tokenIds.increment();
-        emit CharacterNFTMinted(msg.sender, newItemId, _productId);
+        emit LicenseMinted(msg.sender, newItemId, _productId);
     }
 
-    function getAllLicenses() public view returns (LicenseAttributes[] memory) {
-      LicenseAttributes[] memory allLicenses = new LicenseAttributes[](_tokenIds.current() - 1);
-      for (uint i = 1; i < _tokenIds.current(); i++) {
-        allLicenses[i-1] = nftHolderAttributes[i];
-      }
-      return allLicenses;
+    function getUserLicenses() public view returns (LicenseAttributes memory) {
+        uint256 tokenId = nftHolders[msg.sender];
+        if (tokenId > 0) {
+            return nftHolderAttributes[tokenId];
+        }
+
+        LicenseAttributes memory emptyStruct;
+        return emptyStruct;
     }
 }

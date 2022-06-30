@@ -1,8 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
 
 const AppLayout = () => {
-    return (
-        <div className="App">
+  return (
+    <div className="App">
       <header className="App-header">
         <ul>
           <li>
@@ -14,10 +14,10 @@ const AppLayout = () => {
         </ul>
       </header>
       <main>
-      <Outlet />
+        <Outlet />
       </main>
     </div>
-    );
-}
+  );
+};
 
-export default AppLayout
+export default AppLayout;
