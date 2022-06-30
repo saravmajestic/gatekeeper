@@ -15,7 +15,9 @@ const Wallet = ({ setCurrentAccount, setIsLoading }: Props) => {
     const { ethereum } = window;
 
     if (!ethereum) {
-      console.log("Make sure you have MetaMask!");
+      alert(
+        "We support only metamask wallet now. Please add your metamask wallet."
+      );
       setIsLoading(false);
       return;
     }
