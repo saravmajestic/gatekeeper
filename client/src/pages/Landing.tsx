@@ -112,7 +112,15 @@ const LandingPage = () => {
           </Link>
         </Typography>
         <Typography variant="body1">
-          - Connect to rinkeby test network
+          - Connect to rinkeby test network. Add some ETH using the faucets
+          mentioned{" "}
+          <Link
+            to={
+              "https://buildspace.so/p/create-turn-based-nft-game/lessons/deploy-to-rinkeby-opensea"
+            }
+          >
+            here
+          </Link>
         </Typography>
         <Typography variant="body1">
           - Click <pre>Add new license to my wallet</pre> button to mint an NFT
