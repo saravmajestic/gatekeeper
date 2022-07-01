@@ -37,6 +37,7 @@ const Wallet = ({ setCurrentAccount, setIsLoading }: Props) => {
     } else {
       console.log("No authorized account found");
     }
+    setIsLoading(false);
   };
 
   const connectWalletAction = async () => {
@@ -78,7 +79,7 @@ const Wallet = ({ setCurrentAccount, setIsLoading }: Props) => {
         className="cta-button connect-wallet-button"
         onClick={connectWalletAction}
       >
-        Connect Wallet To Get Started
+        Connect Wallet
       </button>
     </div>
   );

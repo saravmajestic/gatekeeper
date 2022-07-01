@@ -25,10 +25,9 @@ contract GateKeeper is ERC721 {
         _tokenIds.increment();
     }
 
-    function mintLicenseNFT(
-        string calldata _productId,
-        string calldata _licenseKey
-    ) external {
+    function mintLicenseNFT(string memory _productId, string memory _licenseKey)
+        external
+    {
         uint256 newItemId = _tokenIds.current();
 
         _safeMint(msg.sender, newItemId);

@@ -6,6 +6,7 @@ import { transformLicenseData } from "../modules/common/constants";
 import gateKeeperAbi from "../abis/GateKeeper.json";
 import { License } from "../modules/common/types";
 import Mint from "../modules/license/Mint";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -75,6 +76,49 @@ const LandingPage = () => {
           {contract && <Mint afterMint={fetchNFTMetadata} />}
         </Box>
       )}
+      <Box
+        sx={{
+          textAlign: "left",
+          width: "50vw",
+          margin: "0 auto",
+          padding: 2,
+          boxShadow:
+            "rgb(0 0 0 / 15%) 0px 4px 4px, rgb(0 0 0 / 20%) 0px 0px 15px",
+          "& pre": {
+            display: "inline-block",
+            background: "#eee",
+            padding: 1,
+          },
+          mt: 2,
+        }}
+      >
+        <Typography variant="h6">What is GateKeeper</Typography>
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          GateKeeper helps to prevent software piracy by authenticating end
+          users through NFTs on chain. Instead of traditional licenses, end
+          users will be given NFTs and users can use the NFT to validate their
+          access.
+        </Typography>
+        <Typography variant="h6">How to use GateKeeper?</Typography>
+        <Typography variant="body1">
+          - Connect your MetaMask Wallet by clicking <pre>Connect Wallet</pre>{" "}
+          button.{" "}
+          <Link
+            to={
+              "https://metamask.zendesk.com/hc/en-us/articles/360015289452-How-to-create-an-additional-account-in-your-MetaMask-wallet?utm_source=buildspace.so&utm_medium=buildspace_project"
+            }
+          >
+            More details here
+          </Link>
+        </Typography>
+        <Typography variant="body1">
+          - Connect to rinkeby test network
+        </Typography>
+        <Typography variant="body1">
+          - Click <pre>Add new license to my wallet</pre> button to mint an NFT
+          and add to your Wallet
+        </Typography>
+      </Box>
     </Box>
   );
 };
