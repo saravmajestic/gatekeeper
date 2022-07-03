@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Wallet from "../modules/wallet/Wallet";
 import { ethers } from "ethers";
@@ -6,7 +6,6 @@ import { transformLicenseData } from "../modules/common/constants";
 import gateKeeperAbi from "../abis/GateKeeper.json";
 import { License } from "../modules/common/types";
 import Mint from "../modules/license/Mint";
-import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -103,24 +102,23 @@ const LandingPage = () => {
         <Typography variant="body1">
           - Connect your MetaMask Wallet by clicking <pre>Connect Wallet</pre>{" "}
           button.{" "}
-          <Link
-            to={
-              "https://metamask.zendesk.com/hc/en-us/articles/360015289452-How-to-create-an-additional-account-in-your-MetaMask-wallet?utm_source=buildspace.so&utm_medium=buildspace_project"
-            }
+          <Button
+            href="https://metamask.zendesk.com/hc/en-us/articles/360015289452-How-to-create-an-additional-account-in-your-MetaMask-wallet?utm_source=buildspace.so&utm_medium=buildspace_project"
+            target="_blank"
           >
             More details here
-          </Link>
+          </Button>
         </Typography>
         <Typography variant="body1">
           - Connect to rinkeby test network. Add some ETH using the faucets
           mentioned{" "}
-          <Link
-            to={
+          <Button
+            href={
               "https://buildspace.so/p/create-turn-based-nft-game/lessons/deploy-to-rinkeby-opensea"
             }
           >
             here
-          </Link>
+          </Button>
         </Typography>
         <Typography variant="body1">
           - Click <pre>Add new license to my wallet</pre> button to mint an NFT
