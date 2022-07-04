@@ -12,9 +12,10 @@ contract GateKeeper is ERC721 {
     struct LicenseAttributes {
         string productID;
         string productLicenseKey;
+        string meta;
     }
     mapping(uint256 => LicenseAttributes) public nftHolderAttributes;
-    mapping(address => uint256) public nftHolders;
+    mapping(address => uint256[]) public nftHolders;
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -25,16 +26,19 @@ contract GateKeeper is ERC721 {
         _tokenIds.increment();
     }
 
-    function mintLicenseNFT(string memory _productId, string memory _licenseKey)
-        external
-    {
+    function mintLicenseNFT(
+        string memory _productId,
+        string memory _licenseKey,
+        string memory _meta
+    ) external {
         uint256 newItemId = _tokenIds.current();
 
         _safeMint(msg.sender, newItemId);
 
         nftHolderAttributes[newItemId] = LicenseAttributes({
             productID: _productId,
-            productLicenseKey: _licenseKey
+            productLicenseKey: _licenseKey,
+            meta: _meta
         });
 
         console.log(
@@ -43,20 +47,32 @@ contract GateKeeper is ERC721 {
             _productId
         );
 
-        nftHolders[msg.sender] = newItemId;
+        nftHolders[msg.sender].push(newItemId);
 
         // Increment the tokenId for the next person that uses it.
         _tokenIds.increment();
         emit LicenseMinted(msg.sender, newItemId, _productId);
     }
 
-    function getUserLicenses() public view returns (LicenseAttributes memory) {
-        uint256 tokenId = nftHolders[msg.sender];
-        if (tokenId > 0) {
-            return nftHolderAttributes[tokenId];
+    function getUserLicenses()
+        external
+        view
+        returns (LicenseAttributes[] memory)
+    {
+        uint256[] memory tokenIds = nftHolders[msg.sender];
+        if (tokenIds.length > 0) {
+            LicenseAttributes[]
+                memory allLicensesAttributes = new LicenseAttributes[](
+                    tokenIds.length
+                );
+            for (uint256 i = 0; i < tokenIds.length; i++) {
+                uint256 tokenId = tokenIds[i];
+                allLicensesAttributes[i] = nftHolderAttributes[tokenId];
+            }
+            return allLicensesAttributes;
         }
 
-        LicenseAttributes memory emptyStruct;
+        LicenseAttributes[] memory emptyStruct = new LicenseAttributes[](0);
         return emptyStruct;
     }
 }

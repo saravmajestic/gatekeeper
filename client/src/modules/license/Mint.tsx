@@ -64,10 +64,18 @@ const Mint = ({ afterMint }: Props) => {
         const productID =
           ProductIds[Math.floor(Math.random() * ProductIds.length)];
         const productLicense = Math.random().toString(36).slice(0, 16);
-        console.log("Minting  in progress...", { productID, productLicense });
+        const meta = JSON.stringify({
+          test: Math.random().toString(36).slice(0, 16),
+        });
+        console.log("Minting  in progress...", {
+          productID,
+          productLicense,
+          meta,
+        });
         const mintTxn = await contract.mintLicenseNFT(
           productID,
-          productLicense
+          productLicense,
+          meta
         );
         await mintTxn.wait();
         console.log("mintTxn:", mintTxn);

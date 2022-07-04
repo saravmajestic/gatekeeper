@@ -1,5 +1,5 @@
-const mintNFT = async (gameContract, productId, licenseKey) => {
-  await gameContract.mintLicenseNFT(productId, licenseKey);
+const mintNFT = async (gameContract, productId, licenseKey, meta) => {
+  await gameContract.mintLicenseNFT(productId, licenseKey, meta);
 };
 const main = async () => {
   const gameContractFactory = await hre.ethers.getContractFactory("GateKeeper");
@@ -7,9 +7,14 @@ const main = async () => {
   await gameContract.deployed();
   console.log("Contract deployed to:", gameContract.address);
 
-  await mintNFT(gameContract, "Windows 11", "12345678");
-  // await mintNFT(gameContract, "Adobe Photoshop", "87654321");
-  // await mintNFT(gameContract, "Sketch", "aabbccdd");
+  await mintNFT(gameContract, "Windows 11", "12345678", "{version: 'Home'}");
+  await mintNFT(
+    gameContract,
+    "Adobe Photoshop",
+    "87654321",
+    "{discount: 'student'}"
+  );
+  await mintNFT(gameContract, "Sketch", "aabbccdd", "{validity: 1}");
 
   console.log(await gameContract.getUserLicenses());
 };
