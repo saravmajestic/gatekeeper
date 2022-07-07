@@ -104,7 +104,7 @@ const Mint = ({ afterMint }: Props) => {
         disabled={isMinting || !currentAccount}
         sx={{ mt: 2 }}
       >
-        Add new license to my wallet
+        Add license to my wallet
       </Button>
     </Box>
   );
