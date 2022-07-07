@@ -1,20 +1,25 @@
 import { Box, Button, Typography } from "@mui/material";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import gateKeeperAbi from "../../abis/GateKeeper.json";
+import { useSearchParams } from "react-router-dom";
+import useWalletAccount from "../account/useWalletAccount";
+import { getRandomString } from "../common/constants";
+import { PRODUCTS } from "../common/products";
+import { getContract } from "../contract/utils";
 
 type Props = {
   afterMint: () => void;
 };
-const ProductIds = [
-  "Windows 11",
-  "Age of Empires",
-  "Adobe Photoshop",
-  "Sketch",
-];
+
 const Mint = ({ afterMint }: Props) => {
   const [isMinting, setIsMinting] = useState(false);
   const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const [searchParams] = useSearchParams();
+  const productID = searchParams.get("product");
+  const purchasedProduct = PRODUCTS.find((product) => product.id === productID);
+
+  const { isLoadingAccount, currentAccount, connectWalletAction } =
+    useWalletAccount();
 
   const onLicenseMint = async (
     sender: string,
@@ -24,6 +29,7 @@ const Mint = ({ afterMint }: Props) => {
     console.log(
       `LicenseNFTMinted - sender: ${sender} tokenId: ${tokenId} productID: ${productId}`
     );
+    alert("License added to your wallet!");
     setIsMinting(false);
   };
   useEffect(() => {
@@ -41,32 +47,22 @@ const Mint = ({ afterMint }: Props) => {
     const { ethereum } = window;
 
     if (ethereum) {
-      const provider = new ethers.providers.Web3Provider(ethereum);
-      const signer = provider.getSigner();
-      const gameContract = new ethers.Contract(
-        `${process.env.REACT_APP_CONTRACT_ADDRESS}`,
-        gateKeeperAbi.abi,
-        signer
-      );
-
-      /*
-       * This is the big difference. Set our gameContract in state.
-       */
-      setContract(gameContract);
+      setContract(getContract());
     } else {
-      console.log("Ethereum object not found");
+      console.error("Ethereum object not found");
     }
   }, []);
   const mintLicense = async () => {
     try {
       if (contract) {
-        setIsMinting(true);
-        const productID =
-          ProductIds[Math.floor(Math.random() * ProductIds.length)];
-        const productLicense = Math.random().toString(36).slice(0, 16);
+        const productLicense = getRandomString();
         const meta = JSON.stringify({
-          test: Math.random().toString(36).slice(0, 16),
+          orderId: searchParams.get("orderId"),
         });
+        if (!productID || !searchParams.get("orderId")) {
+          alert("Invalid product id or order id");
+        }
+        setIsMinting(true);
         console.log("Minting  in progress...", {
           productID,
           productLicense,
@@ -88,10 +84,26 @@ const Mint = ({ afterMint }: Props) => {
   };
   return (
     <Box>
+      {isLoadingAccount && (
+        <Typography variant="body1">Loading account...</Typography>
+      )}
       {isMinting && (
         <Typography variant="body1">Minting in progress...</Typography>
       )}
-      <Button variant="contained" onClick={mintLicense}>
+      {!isLoadingAccount && !currentAccount && (
+        <Button onClick={connectWalletAction} variant="contained">
+          Connect Wallet
+        </Button>
+      )}
+      <Typography sx={{ mt: 2 }}>
+        Add the license for your <i>{purchasedProduct?.name}</i> order
+      </Typography>
+      <Button
+        variant="contained"
+        onClick={mintLicense}
+        disabled={isMinting || !currentAccount}
+        sx={{ mt: 2 }}
+      >
         Add new license to my wallet
       </Button>
     </Box>

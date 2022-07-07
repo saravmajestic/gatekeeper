@@ -1,26 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useState } from "react";
-import Wallet from "../modules/wallet/Wallet";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentAccount, setCurrentAccount] = useState<string | null>(null);
-
   return (
     <Box>
-      {isLoading && <Box>Loading...</Box>}
-      {!currentAccount ? (
-        <Wallet
-          setCurrentAccount={setCurrentAccount}
-          setIsLoading={setIsLoading}
-        />
-      ) : (
-        <Box>
-          <Typography variant="h6">
-            Current Account: {currentAccount}
-          </Typography>
-        </Box>
-      )}
       <Box
         sx={{
           textAlign: "left",
@@ -46,6 +29,13 @@ const LandingPage = () => {
         </Typography>
         <Typography variant="h6">How to use GateKeeper?</Typography>
         <Typography variant="body1">
+          - Purchase a product from <Link to={"/products"}>here</Link>
+        </Typography>
+        <Typography variant="body1">
+          - After order is confirmed, add license to your wallet by clicking
+          `Add License to your wallet` button
+        </Typography>
+        <Typography variant="body1">
           - Connect your MetaMask Wallet by clicking <pre>Connect Wallet</pre>{" "}
           button.{" "}
           <Button
@@ -66,9 +56,22 @@ const LandingPage = () => {
             here
           </Button>
         </Typography>
+        <Typography variant="body1">- Add license to your wallet</Typography>
         <Typography variant="body1">
-          - Click <pre>Add new license to my wallet</pre> button to mint an NFT
-          and add to your Wallet
+          - [TODO:] Download test app from <Link to="">here</Link>
+        </Typography>
+        <Typography variant="body1">
+          - [TODO:] Click <pre>Add License</pre> button
+        </Typography>
+        <Typography variant="body1">
+          - [TODO:] Select right license from the list
+        </Typography>
+        <Typography variant="body1">
+          - [TODO:] Click <pre>Add License</pre> button
+        </Typography>
+        <Typography variant="body1">
+          - [TODO:] After successful authentication, the downloaded test app
+          will take you to landing page
         </Typography>
       </Box>
     </Box>

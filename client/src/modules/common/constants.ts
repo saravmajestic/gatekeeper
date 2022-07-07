@@ -7,3 +7,5 @@ export const transformLicenseData = (licenseData: License) => {
     meta: licenseData.meta,
   };
 };
+
+export const getRandomString = () => Math.random().toString(36).slice(0, 16);

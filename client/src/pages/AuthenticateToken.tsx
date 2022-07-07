@@ -1,32 +1,43 @@
-import { Box, Typography } from "@mui/material";
-import { ethers } from "ethers";
+import {
+  Box,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import useWalletAccount from "../modules/account/useWalletAccount";
 import { transformLicenseData } from "../modules/common/constants";
 import { License } from "../modules/common/types";
-import gateKeeperAbi from "../abis/GateKeeper.json";
+import { getContract } from "../modules/contract/utils";
 
 const AuthenticateToken = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUserLicenses, setCurrentUserLicenses] = useState<
-    License[] | null
-  >(null);
+  const [matchingLicenses, setMatchingLicenses] = useState<License[] | null>(
+    null
+  );
+  const [searchParams] = useSearchParams();
+
+  const { isLoadingAccount, currentAccount } = useWalletAccount();
   const fetchNFTMetadata = async () => {
     console.log("Checking for license NFT on address:", currentAccount);
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const gatekeeperContract = new ethers.Contract(
-        `${process.env.REACT_APP_CONTRACT_ADDRESS}`,
-        gateKeeperAbi.abi,
-        signer
-      );
+      const gatekeeperContract = getContract();
 
       const txn = await gatekeeperContract.getUserLicenses();
       console.log(txn);
       if (txn.length) {
         console.log("User has license token");
-        setCurrentUserLicenses(
-          txn.map((license: any) => transformLicenseData(license))
+        const licenses: License[] = txn.map((license: any) =>
+          transformLicenseData(license)
+        );
+        setMatchingLicenses(
+          licenses.filter(
+            (license) => license.productID === searchParams.get("productId")
+          )
         );
       } else {
         console.log("No License NFT found");
@@ -43,36 +54,40 @@ const AuthenticateToken = () => {
       fetchNFTMetadata();
     }
   }, [currentAccount]);
+  const authUsingLicense = (license: License) => {
+    console.log(license);
+    alert("To be continued...");
+  };
   return (
     <Box>
-      {isLoading && <Box>Loading...</Box>}
-      {currentUserLicenses?.length ? (
+      {isLoading && isLoadingAccount && <Box>Loading...</Box>}
+      {matchingLicenses?.length ? (
         <Box>
-          <Typography variant="h6">Current Licenses: </Typography>
-          {currentUserLicenses.map((license) => (
-            <Box
-              sx={{
-                mb: 1,
-                width: "50vw",
-                ml: "auto",
-                mr: "auto",
-                boxShadow:
-                  "0px 0px 10px rgba(0, 0, 0, 0.3), inset 0px 0px 25px rgba(255, 255, 255, 0.35)",
-              }}
-            >
-              <Typography variant="body1">
-                ProductId: {license.productID}
-              </Typography>
-              <Typography variant="body1">
-                Product License: {license.productLicenseKey}
-              </Typography>
-              <Typography variant="body1">
-                Product Meta: {license.meta}
-              </Typography>
-            </Box>
-          ))}
+          <Typography variant="h6">Matching Licenses: </Typography>
+          <List dense sx={{ width: 320, margin: "0 auto", mt: 2 }}>
+            {matchingLicenses.map((license) => (
+              <>
+                <ListItem
+                  key={license.productLicenseKey}
+                  secondaryAction={
+                    <Button onClick={() => authUsingLicense(license)}>
+                      Use
+                    </Button>
+                  }
+                >
+                  <ListItemText
+                    primary={license.productID}
+                    secondary={license.meta}
+                  />
+                </ListItem>
+                <Divider />
+              </>
+            ))}
+          </List>
         </Box>
-      ) : null}
+      ) : (
+        <Typography>No matching licenses</Typography>
+      )}
     </Box>
   );
 };
