@@ -9,6 +9,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract GateKeeper is ERC721 {
+    struct LicenseAttributesByToken {
+        string token;
+        LicenseAttributes licenseAttributes;
+    }
     struct LicenseAttributes {
         string productID;
         string productLicenseKey;
@@ -54,25 +58,55 @@ contract GateKeeper is ERC721 {
         emit LicenseMinted(msg.sender, newItemId, _productId);
     }
 
+    function uint2str(uint256 _i)
+        internal
+        pure
+        returns (string memory _uintAsString)
+    {
+        if (_i == 0) {
+            return "0";
+        }
+        uint256 j = _i;
+        uint256 len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint256 k = len;
+        while (_i != 0) {
+            k = k - 1;
+            uint8 temp = (48 + uint8(_i - (_i / 10) * 10));
+            bytes1 b1 = bytes1(temp);
+            bstr[k] = b1;
+            _i /= 10;
+        }
+        return string(bstr);
+    }
+
     function getUserLicenses()
         external
         view
-        returns (LicenseAttributes[] memory)
+        returns (LicenseAttributesByToken[] memory)
     {
         uint256[] memory tokenIds = nftHolders[msg.sender];
         if (tokenIds.length > 0) {
-            LicenseAttributes[]
-                memory allLicensesAttributes = new LicenseAttributes[](
+            LicenseAttributesByToken[]
+                memory allLicensesAttributes = new LicenseAttributesByToken[](
                     tokenIds.length
                 );
             for (uint256 i = 0; i < tokenIds.length; i++) {
                 uint256 tokenId = tokenIds[i];
-                allLicensesAttributes[i] = nftHolderAttributes[tokenId];
+                allLicensesAttributes[i] = LicenseAttributesByToken({
+                    token: uint2str(tokenIds[i]),
+                    licenseAttributes: nftHolderAttributes[tokenId]
+                });
             }
             return allLicensesAttributes;
         }
 
-        LicenseAttributes[] memory emptyStruct = new LicenseAttributes[](0);
+        LicenseAttributesByToken[]
+            memory emptyStruct = new LicenseAttributesByToken[](0);
         return emptyStruct;
     }
 }

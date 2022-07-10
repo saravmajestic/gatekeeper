@@ -16,6 +16,6 @@
     "outDir": "dist",
     "strictNullChecks": false
   },
-  "include": ["api"],
+  "include": ["api", "models"],
   "exclude": []
 }

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-const allowCors =
+export const allowCors =
   (fn: (req: Request, res: Response) => void) =>
   async (req: Request, res: Response) => {
     // res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -20,11 +20,9 @@ const allowCors =
     return await fn(req, res);
   };
 
-function handler(request: Request, response: Response) {
-  response.status(200).json({
-    body: request.body,
-    query: request.query,
-  });
+export const LICENSE_COLLECTION_NAME = "licenses";
+export enum LICENSE_STATUS {
+  STARTED = "started",
+  DECLINED = "declined",
+  APPORVED = "approved",
 }
-
-module.exports = allowCors(handler);

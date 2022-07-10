@@ -1,22 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const LandingPage = () => {
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}authenticate`, {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-      });
-  }, []);
   return (
     <Box>
       <Box

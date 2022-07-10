@@ -11,17 +11,32 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import useWalletAccount from "../modules/account/useWalletAccount";
 import { transformLicenseData } from "../modules/common/constants";
-import { License } from "../modules/common/types";
+import { License, LicenseJob } from "../modules/common/types";
 import { getContract } from "../modules/contract/utils";
+import useAuthentication from "../modules/license/useAuthentication";
 
 const AuthenticateToken = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [matchingLicenses, setMatchingLicenses] = useState<License[] | null>(
     null
   );
+  const [createdJob, setCreatedJob] = useState<LicenseJob | null>(null);
   const [searchParams] = useSearchParams();
+  const productId = searchParams.get("productId")?.toString();
+  const deviceId = searchParams.get("deviceId")?.toString();
+  const { authenticate, startAuthentication } = useAuthentication();
 
   const { isLoadingAccount, currentAccount } = useWalletAccount();
+
+  useEffect(() => {
+    if (!deviceId || !productId || !currentAccount) {
+      return;
+    }
+
+    startAuthentication(productId, deviceId, currentAccount).then(
+      (backendJob) => setCreatedJob(backendJob)
+    );
+  }, [productId, deviceId, currentAccount]);
   const fetchNFTMetadata = async () => {
     console.log("Checking for license NFT on address:", currentAccount);
     try {
@@ -35,9 +50,7 @@ const AuthenticateToken = () => {
           transformLicenseData(license)
         );
         setMatchingLicenses(
-          licenses.filter(
-            (license) => license.productID === searchParams.get("productId")
-          )
+          licenses.filter((license) => license.productID === productId)
         );
       } else {
         console.log("No License NFT found");
@@ -55,8 +68,25 @@ const AuthenticateToken = () => {
     }
   }, [currentAccount]);
   const authUsingLicense = (license: License) => {
-    console.log(license);
-    alert("To be continued...");
+    if (!productId || !deviceId) {
+      alert("Invalid Product or device ID");
+      return;
+    }
+    if (!currentAccount) {
+      alert("Invalid Wallet account");
+      return;
+    }
+    if (!createdJob?._id) {
+      alert("Invalid status, please try again");
+      return;
+    }
+    authenticate(
+      productId,
+      deviceId,
+      currentAccount,
+      license.token,
+      createdJob._id
+    ).then((backendJob) => alert("Successfully authenticated!"));
   };
   return (
     <Box>
@@ -70,7 +100,10 @@ const AuthenticateToken = () => {
                 <ListItem
                   key={license.productLicenseKey}
                   secondaryAction={
-                    <Button onClick={() => authUsingLicense(license)}>
+                    <Button
+                      onClick={() => authUsingLicense(license)}
+                      disabled={!createdJob}
+                    >
                       Use
                     </Button>
                   }

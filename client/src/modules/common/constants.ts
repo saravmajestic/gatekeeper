@@ -1,10 +1,14 @@
 import { License } from "./types";
 
-export const transformLicenseData = (licenseData: License) => {
+export const transformLicenseData = (licenseData: {
+  token: string;
+  licenseAttributes: License;
+}): License => {
   return {
-    productID: licenseData.productID,
-    productLicenseKey: licenseData.productLicenseKey,
-    meta: licenseData.meta,
+    productID: licenseData.licenseAttributes.productID,
+    productLicenseKey: licenseData.licenseAttributes.productLicenseKey,
+    meta: licenseData.licenseAttributes.meta,
+    token: licenseData.token,
   };
 };
 
