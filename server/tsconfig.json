@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUnusedLocals": true,
+    "noEmit": true,
+    "declaration": true,
+    "downlevelIteration": true,
+    "noErrorTruncation": true,
+    "rootDir": "./",
+    "outDir": "dist",
+    "strictNullChecks": false
+  },
+  "include": ["api"],
+  "exclude": []
+}
