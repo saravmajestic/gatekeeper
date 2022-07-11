@@ -6,10 +6,10 @@ import { allowCors } from "../_constants";
 async function handler(request: Request, response: Response) {
   try {
     await dbConnect();
-    const { jobId } = request.query;
+    const { deviceId, productId } = request.query;
 
     // @ts-ignore
-    const existingLicense = await LicenseModel.findById(jobId);
+    const existingLicense = await LicenseModel.findOne({ deviceId, productId });
 
     if (existingLicense) {
       return response.json(existingLicense);

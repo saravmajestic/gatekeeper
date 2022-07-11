@@ -1,19 +1,4 @@
 const useAuthentication = () => {
-  const getJobStatus = (jobId: string) => {
-    return fetch(
-      `${process.env.REACT_APP_API_URL}authenticate/status?jobId=${jobId}`,
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((response) => console.log(response));
-  };
   const startAuthentication = (
     productId: string,
     deviceId: string,
@@ -46,7 +31,7 @@ const useAuthentication = () => {
       },
     }).then((response) => response.json());
   };
-  return { authenticate, startAuthentication, getJobStatus };
+  return { authenticate, startAuthentication };
 };
 
 export default useAuthentication;
