@@ -15,6 +15,7 @@ import { License, LicenseJob } from "../modules/common/types";
 import { getContract } from "../modules/contract/utils";
 import useAuthentication from "../modules/license/useAuthentication";
 
+const FREQUENCY = 5000;
 const AuthenticateToken = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [matchingLicenses, setMatchingLicenses] = useState<License[] | null>(
@@ -24,17 +25,26 @@ const AuthenticateToken = () => {
   const [searchParams] = useSearchParams();
   const productId = searchParams.get("productId")?.toString();
   const deviceId = searchParams.get("deviceId")?.toString();
-  const { authenticate, startAuthentication } = useAuthentication();
+  const { authenticate, startAuthentication, getJobStatus } =
+    useAuthentication();
 
   const { isLoadingAccount, currentAccount } = useWalletAccount();
 
+  const checkStatus = (job: LicenseJob) => {
+    setTimeout(() => {
+      getJobStatus(job._id).then(() => checkStatus(job));
+    }, FREQUENCY);
+  };
   useEffect(() => {
     if (!deviceId || !productId || !currentAccount) {
       return;
     }
 
     startAuthentication(productId, deviceId, currentAccount).then(
-      (backendJob) => setCreatedJob(backendJob)
+      (backendJob) => {
+        setCreatedJob(backendJob);
+        checkStatus(backendJob);
+      }
     );
   }, [productId, deviceId, currentAccount]);
   const fetchNFTMetadata = async () => {

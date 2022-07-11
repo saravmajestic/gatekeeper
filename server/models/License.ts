@@ -13,7 +13,7 @@ const LicenseSchema = new mongoose.Schema(
 );
 
 LicenseSchema.index(
-  { deviceId: 1 },
+  { deviceId: 1, productId: 1 },
   {
     unique: true,
   }
