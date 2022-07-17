@@ -4,7 +4,7 @@
       "path": "."
     },
     {
-      "path": "../gatekeeper-test-app"
+      "path": "../gatekeeper-demo-app"
     }
   ],
   "settings": {

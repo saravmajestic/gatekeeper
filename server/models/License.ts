@@ -16,6 +16,9 @@ LicenseSchema.index(
   { deviceId: 1, productId: 1 },
   {
     unique: true,
+    partialFilterExpression: {
+      status: { $ne: [LICENSE_STATUS.APPROVED, LICENSE_STATUS.DECLINED] },
+    },
   }
 );
 export default mongoose.models.License ||

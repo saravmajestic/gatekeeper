@@ -35,7 +35,7 @@ async function handler(request: Request, response: Response) {
         productId,
       },
       {
-        $set: { status: LICENSE_STATUS.APPORVED, token },
+        $set: { status: LICENSE_STATUS.APPROVED, token },
       }
     );
     response.json(updatedLicense);

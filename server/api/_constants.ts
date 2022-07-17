@@ -24,5 +24,5 @@ export const LICENSE_COLLECTION_NAME = "licenses";
 export enum LICENSE_STATUS {
   STARTED = "started",
   DECLINED = "declined",
-  APPORVED = "approved",
+  APPROVED = "approved",
 }
