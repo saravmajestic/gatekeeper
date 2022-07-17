@@ -17,6 +17,7 @@ import useAuthentication from "../modules/license/useAuthentication";
 
 const AuthenticateToken = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [matchingLicenses, setMatchingLicenses] = useState<License[] | null>(
     null
   );
@@ -70,7 +71,7 @@ const AuthenticateToken = () => {
       fetchNFTMetadata();
     }
   }, [currentAccount]);
-  const authUsingLicense = (license: License) => {
+  const authUsingLicense = async (license: License) => {
     if (!productId || !deviceId) {
       alert("Invalid Product or device ID");
       return;
@@ -83,17 +84,20 @@ const AuthenticateToken = () => {
       alert("Invalid status, please try again");
       return;
     }
-    authenticate(
+    setIsAuthenticating(true);
+    await authenticate(
       productId,
       deviceId,
       currentAccount,
       license.token,
       createdJob._id
     ).then((backendJob) => alert("Successfully authenticated!"));
+    setIsAuthenticating(false);
   };
   return (
     <Box>
       {isLoading && isLoadingAccount && <Box>Loading...</Box>}
+      {isAuthenticating && <Box>Authenticating...</Box>}
       {!isLoadingAccount && !currentAccount && (
         <Button onClick={connectWalletAction} variant="contained">
           Connect Wallet
@@ -110,7 +114,7 @@ const AuthenticateToken = () => {
                   secondaryAction={
                     <Button
                       onClick={() => authUsingLicense(license)}
-                      disabled={!createdJob}
+                      disabled={!createdJob || isAuthenticating}
                     >
                       Use
                     </Button>
