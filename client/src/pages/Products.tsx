@@ -43,7 +43,15 @@ const Products = () => {
         <Dialog open>
           <DialogContent sx={{ textAlign: "center" }}>
             <Typography variant="h6">
-              Congratulations. Your order is confirmed.
+              Congratulations. Your order is confirmed. You can download test
+              app{" "}
+              <a
+                href="https://drive.google.com/file/d/1ePtAwyTKPUS7isOSdsOZBMh4rzZi3RkE/view"
+                target="_blank"
+                rel="noreferrer"
+              >
+                here
+              </a>
             </Typography>
             <Button
               href={`/add-license?orderId=${purchasedProduct.orderId}&product=${purchasedProduct.productId}`}
